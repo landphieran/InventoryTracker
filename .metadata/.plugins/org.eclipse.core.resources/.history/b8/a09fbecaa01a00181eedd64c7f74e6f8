@@ -1,0 +1,1 @@
+email.all.stores=from:walmart,from:target subject:order,from:ulta subject:order,from:boardgamegeek store subject:order,from:nike,from:kmart,from:sears,from:lego subject:order,from:toysrus,from:store@zmangames.com,from:(no-reply@fantasyflightgames.com OR store@fantasyflightgames.com),from:(homedepot@orders.homedepot.com OR homedepot@homedepot.com)

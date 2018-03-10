@@ -1,0 +1,35 @@
+package com.andrew.gmail.domain;
+
+import java.nio.charset.Charset;
+
+public class EmailContainer {
+
+	public String emailbody;
+	public String MimeType;
+	public Charset charset;
+	
+	public String getMimeType() {
+		return MimeType;
+	}
+
+	public void setMimeType(String mimeType) {
+		MimeType = mimeType;
+	}
+
+	public Charset getCharset() {
+		return charset;
+	}
+
+	public void setCharset(Charset charset) {
+		this.charset = charset;
+	}
+
+	
+	public String getEmailbody() {
+		return emailbody;
+	}
+
+	public void setEmailbody(String emailbody) {
+		this.emailbody = emailbody;
+	}
+}

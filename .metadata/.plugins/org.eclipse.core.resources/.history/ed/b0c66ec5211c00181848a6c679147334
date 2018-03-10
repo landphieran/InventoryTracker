@@ -1,0 +1,18 @@
+package com.andrew.store;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.apache.james.mime4j.message.Message;
+
+import com.andrew.gmail.domain.GmailEmailInfo;
+
+public class LegoProcessor extends AbstractProcessor {
+
+	@Override
+	public List<GmailEmailInfo> execute(Stream<Message> messages) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

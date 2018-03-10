@@ -1,0 +1,19 @@
+package com.andrew.store;
+
+public class StoreFactory {
+
+	private final String WALMART = "walmart";
+	private final String TARGET = "target";
+	private final String HOME_DEPOT = "homedepot";
+	private final String NIKE = "nike";
+	private final String BARNES_NOBLE = "barnesnoble";
+	private final String TRU = "toysrus";
+	private final String KMART = "kmart";
+	private final String LEGO = "lego";
+	private final String JOURNEYS = "journeys";
+	private final String BGG	= "boardgamegeek";
+	
+	public AbstractProcessor getStore(String name) {
+		if (name.equals(anObject))
+	}
+}

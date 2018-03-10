@@ -1,0 +1,18 @@
+package com.andrew.gmail.domain;
+
+import java.util.List;
+
+public class GmailEmailInfo {
+
+	private String subject;
+	private String messageId;
+	private String threadId;
+	private String messageBody;
+	private String destinationEmailAddr;
+	private String sourceEmailAddr;
+	private String snippit;
+	private List<String> labelids;
+	private Receipt receipt;
+	
+	BigInteger
+}

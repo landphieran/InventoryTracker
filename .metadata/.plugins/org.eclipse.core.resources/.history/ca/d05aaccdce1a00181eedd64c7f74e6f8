@@ -1,0 +1,8 @@
+package com.andrew.gmail.domain;
+
+public class ReceiptInfo {
+
+	private String orderId;
+	private String store;
+	private List<Items> items;
+}

@@ -1,0 +1,5 @@
+package com.andrew.gmail.client;
+
+public class GmailClient {
+
+}

@@ -1,0 +1,71 @@
+package com.andrew.gmail.mime4j.content;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.james.mime4j.MimeException;
+import org.apache.james.mime4j.parser.AbstractContentHandler;
+import org.apache.james.mime4j.stream.BodyDescriptor;
+import org.apache.james.mime4j.stream.Field;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class GmailContentHandler extends AbstractContentHandler {
+	  	
+		private static final Logger LOGGER = LogManager.getLogger(GmailContentHandler.class);
+		
+		@Override
+		public void endMultipart() throws MimeException {
+			LOGGER.info("End of Multipart");
+	    }
+		@Override
+	    public void startMultipart(BodyDescriptor bd) throws MimeException {
+			LOGGER.info("Start of Multipart");
+			LOGGER.info("MIMETYPE: " + bd.getMimeType() + "| MEDIATYPE: " + bd.getMediaType() + " | Charset: " + bd.getCharset());
+		}
+		@Override
+	    public void body(BodyDescriptor bd, InputStream is)throws MimeException, IOException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void endBodyPart() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void endHeader() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void endMessage() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void epilogue(InputStream is) throws MimeException, IOException {
+			LOGGER.info("Epilogue);
+	    }
+		@Override
+	    public void field(Field field) throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void preamble(InputStream is) throws MimeException, IOException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void startBodyPart() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void startHeader() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void startMessage() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void raw(InputStream is) throws MimeException, IOException {
+			LOGGER.info("Start of Multipart");
+	    }
+
+}

@@ -1,0 +1,143 @@
+package com.andrew.store;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.james.mime4j.MimeException;
+import org.apache.james.mime4j.codec.DecodeMonitor;
+import org.apache.james.mime4j.dom.Header;
+import org.apache.james.mime4j.message.DefaultBodyDescriptorBuilder;
+import org.apache.james.mime4j.message.SimpleContentHandler;
+import org.apache.james.mime4j.parser.ContentHandler;
+import org.apache.james.mime4j.parser.MimeStreamParser;
+import org.apache.james.mime4j.stream.BodyDescriptor;
+import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
+import org.apache.james.mime4j.stream.Field;
+import org.apache.james.mime4j.stream.MimeConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.andrew.gmail.domain.GmailEmailInfo;
+import com.andrew.gmail.domain.Receipt;
+import com.andrew.gmail.mime4j.content.GmailContentHandler;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
+
+import tech.blueglacier.email.Attachment;
+import tech.blueglacier.email.Email;
+import tech.blueglacier.email.MultipartType;
+import tech.blueglacier.parser.CustomContentHandler;
+
+public class WalmartProcessor extends AbstractProcessor {
+
+	private static final Logger LOGGER = LogManager.getLogger(WalmartProcessor.class);
+	
+	@Override
+	public List<GmailEmailInfo> execute(Stream<Message> messages) {
+		List<GmailEmailInfo> infos = new ArrayList<GmailEmailInfo>();
+		
+		
+		List<Message> lMessages = messages.collect(Collectors.toList());
+		for (Message mess : lMessages) {
+			GmailEmailInfo info = new GmailEmailInfo();
+			Receipt receipt = new Receipt();
+			try {
+				
+				ContentHandler contentHandler = new GmailContentHandler();
+				MimeStreamParser parser = new MimeStreamParser();
+				parser.setContentHandler(contentHandler);
+				for (MessagePart part : mess.getPayload().getParts()) {
+					parser.parse(new ByteArrayInputStream(Base64.decodeBase64(part.getBody().getData())));
+				}
+					
+				parser.parse(new ByteArrayInputStream(Base64.decodeBase64(	mess.getPayload().getBody().decodeData())));
+				
+//				ContentHandler contentHandler = new CustomContentHandler();
+//				MimeConfig mime4jParserConfig = MimeConfig.DEFAULT;
+//				BodyDescriptorBuilder bodyDescriptorBuilder = new DefaultBodyDescriptorBuilder();
+//				MimeStreamParser mime4jParser = new MimeStreamParser(mime4jParserConfig,DecodeMonitor.SILENT,bodyDescriptorBuilder);
+//				mime4jParser.setContentDecoding(true);
+//				mime4jParser.setContentHandler(contentHandler);
+//	
+//				byte[] emailBytes = Base64.decodeBase64(mess.getRaw());
+//				InputStream mailIn = new ByteArrayInputStream(emailBytes);
+//				mime4jParser.parse(mailIn);
+//				
+//				Email email = ((CustomContentHandler) contentHandler).getEmail();
+//				
+//				if (email != null) {
+//					info.setSourceEmailAddr(email.getFromEmailHeaderValue());
+//					info.setDestinationEmailAddr(email.getToEmailHeaderValue());
+//					info.setSubject(email.getEmailSubject());
+//					
+//					Attachment emailbodytext = email.getPlainTextEmailBody();
+//					
+//					Attachment htmlEmailBody = email.getHTMLEmailBody();
+//					if (htmlEmailBody != null) {
+//						org.apache.james.mime4j.dom.Message messss = checkMessageStream(htmlEmailBody.getIs(),"message-id",Charset.forName(htmlEmailBody.getBd().getCharset()));
+//						ContentHandler contentHandler2 = new CustomContentHandler();
+//						MimeStreamParser mime4jParser2 = new MimeStreamParser();
+//						mime4jParser2.setContentHandler(contentHandler2);
+//						mime4jParser2.parse(htmlEmailBody.getIs());
+//
+//					}
+//					
+//					Attachment calendar = email.getCalendarBody();
+//					Stack<MultipartType> multipartstack = email.getMultipartStack();
+//					
+//					Header header = email.getHeader();
+//					for (Field field : header.getFields()){
+//						String name =  field.getName();
+//						String body = field.getBody();
+//						System.out.println("Field name: " + name + " || Body : " + body);
+//					}
+//				} else {
+//					LOGGER.error("Failed to load email ID : " + mess.getId());
+//				}
+			} catch (MimeException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+//			try {
+//				info.setSnippit(mess.getSnippet());
+//				
+//				List<MessagePartHeader> headers = mess.getPayload().getHeaders();
+//				for (MessagePartHeader header : headers) {
+//					if (StoreConstants.SUBJECT.equals(header.getName())) {
+//						info.setSubject(header.getValue());
+//					}
+//					if (StoreConstants.TO.equals(header.getName())) {
+//						info.setDestinationEmailAddr(header.getValue());
+//					}
+//					if (StoreConstants.FROM.equals(header.getName())) {
+//						info.setSourceEmailAddr(header.getValue());
+//					}
+//					if(StoreConstants.DATE.equals(header.getName())) {
+//						receipt.setDate(header.getValue());
+//					}
+//					
+//				}
+//				List<MessagePart> parts = mess.getPayload().getParts();
+//				for (MessagePart part : parts) {
+//					byte[] bodyBytes = Base64.decodeBase64(part.getBody().getData());
+//					String body = new String(bodyBytes, "UTF-8");
+//					System.out.println("Body: " + body);
+//				}
+//			} catch (UnsupportedEncodingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		}
+		return infos;
+	}
+}

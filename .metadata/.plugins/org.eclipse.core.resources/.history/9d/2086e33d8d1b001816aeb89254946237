@@ -1,0 +1,15 @@
+package com.andrew.store;
+
+import java.util.List;
+
+import com.andrew.gmail.domain.GmailEmailInfo;
+
+public class NikeProcessor extends AbstractProcessor {
+
+	@Override
+	public List<GmailEmailInfo> execute() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

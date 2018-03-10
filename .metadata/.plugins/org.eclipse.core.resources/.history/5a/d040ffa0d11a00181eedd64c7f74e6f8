@@ -1,0 +1,10 @@
+package com.andrew.gmail.domain;
+
+import java.util.List;
+
+public class ReceiptInfo {
+
+	private String orderId;
+	private String store;
+	private List<Item> items;
+}

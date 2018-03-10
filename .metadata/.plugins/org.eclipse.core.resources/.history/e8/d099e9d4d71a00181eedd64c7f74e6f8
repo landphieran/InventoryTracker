@@ -1,0 +1,118 @@
+package com.andrew.gmail.loader;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.stereotype.Service;
+
+import com.andrew.gmail.client.GmailClient;
+import com.google.api.client.googleapis.batch.BatchRequest;
+import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonError;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.util.Base64;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartHeader;
+
+@Service
+@Configuration
+@ComponentScan(basePackages = {"com.andrew"})
+@PropertySource("classpath:storeFilter.properties")
+public class GmailBatchRunner {
+	@Value("#{'${email.all.stores}'.split(',')}")
+	private List<String> queries;
+	
+	final Gmail client = GmailClient.getGmailService();
+	final List<Message> result_messages = new ArrayList<Message>();
+	
+	JsonBatchCallback<Message> callback = new JsonBatchCallback<Message>() {
+	    public void onSuccess(Message message, HttpHeaders responseHeaders) {
+	        synchronized (result_messages) {
+	        	result_messages.add(message);  
+	        }
+	    }
+
+	    @Override
+	    public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders)
+	            throws IOException {
+	    }
+	};
+	
+	public static void main(String args[]) {
+		AbstractApplicationContext  context = new AnnotationConfigApplicationContext(GmailBatchRunner.class);
+		GmailBatchRunner runner = (GmailBatchRunner)context.getBean("gmailBatchRunner");
+		runner.execute();
+	}
+	
+	public void execute() {
+		Map<String,String> filters = buildfilterList(queries);
+		int BATCH_SIZE = 100;
+		try {
+			for (Map.Entry<String, String> entry : filters.entrySet()) {
+				List<Message> messages = GmailService.listMessagesMatchingQuery(client, "me", entry.getValue());
+				IntStream.range(0, (messages.size()+BATCH_SIZE-1)/BATCH_SIZE)
+		         .mapToObj(i -> messages.subList(i*BATCH_SIZE, Math.min(messages.size(), (i+1)*BATCH_SIZE))).parallel()
+		         .forEach(batch -> process(batch));
+			
+				for (Message mess : result_messages) {
+					mess.getSnippet();
+					m
+					List<MessagePartHeader> headers = mess.getPayload().getHeaders();
+					headers.
+					List<MessagePart> parts = mess.getPayload().getParts();
+					for (MessagePart part : parts) {
+						byte[] bodyBytes = Base64.decodeBase64(part.getBody().getData());
+						String body = new String(bodyBytes, "UTF-8");
+						System.out.println("Body: " + body);
+					}
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void process(List<Message> messages) {
+		try {
+			BatchRequest br = new BatchRequest(GoogleNetHttpTransport.newTrustedTransport(), (HttpRequestInitializer)client.getGoogleClientRequestInitializer());
+			for (Message message : messages) {
+				client.users().messages().get("me", message.getId()).queue(br, callback);
+			}
+			br.execute();
+		} catch (IOException | GeneralSecurityException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//First value is the store, second value is the filter for the emails
+	private Map<String,String> buildfilterList(List<String> queries) {
+		Map<String,String> filterMap = new HashMap<String,String>();
+		for (int i = 0; i < queries.size()-1; i+=2) {
+			filterMap.put(queries.get(i), queries.get(i+1));
+		}
+		return filterMap;
+	}
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+}

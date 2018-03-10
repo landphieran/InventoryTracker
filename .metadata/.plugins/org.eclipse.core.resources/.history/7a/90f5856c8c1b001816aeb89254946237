@@ -1,0 +1,49 @@
+package com.andrew.store;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.andrew.gmail.client.GmailClient;
+
+public class StoreFactory {
+	
+	private static final Logger LOGGER = LogManager.getLogger(StoreFactory.class);
+	private final String WALMART = "walmart";
+	private final String TARGET = "target";
+	private final String HOME_DEPOT = "homedepot";
+	private final String NIKE = "nike";
+	private final String BARNES_NOBLE = "barnesnoble";
+	private final String TRU = "toysrus";
+	private final String KMART = "kmart";
+	private final String LEGO = "lego";
+	private final String JOURNEYS = "journeys";
+	private final String BGG	= "boardgamegeek";
+	
+	
+	public AbstractProcessor getStore(String name) {
+		if (WALMART.equals(name)) {
+			return new WalmartProcessor();
+		} else if (TARGET.equals(name)) {
+			return new TargetProcessor();
+		} else if (HOME_DEPOT.equals(name)) {
+			return new HomeDepotProcessor();
+		} else if (NIKE.equals(name)) {
+			return new NikeProcessor();
+		} else if (BARNES_NOBLE.equals(name)) {
+			return new BarnesNobleProcessor();
+		} else if (TRU.equals(name)) {
+			return new TRUProcessor();
+		} else if (KMART.equals(name)) {
+			return new KmartProcessor();
+		} else if (LEGO.equals(name)) {
+			return new LegoProcessor();
+		} else if (JOURNEYS.equals(name)) {
+			return new JourneysProcessor();
+		} else if (BGG.equals(name)) {
+			return new BGGProcessor();
+		} else {
+			LOGGER.error("Factory Class did not match" + name);
+		}
+		return null;
+	}
+}

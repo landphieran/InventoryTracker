@@ -1,0 +1,5 @@
+package com.andrew.gmail.mapper;
+
+public static class MessageMapper {
+
+}

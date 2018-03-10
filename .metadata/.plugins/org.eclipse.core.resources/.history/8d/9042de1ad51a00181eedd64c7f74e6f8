@@ -1,0 +1,18 @@
+package com.andrew.gmail.domain;
+
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+
+public class Receipt {
+
+	//Return, order, shipping notice,
+	private String type;
+	private Date date;
+	private Date arrivalDate;
+	private String orderId;
+	private String store;
+	private List<Item> items;
+	private BigInteger tax;
+	private BigInteger shippingPrice;
+}

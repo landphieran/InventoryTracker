@@ -1,0 +1,16 @@
+package com.andrew.gmail.domain;
+
+public class EmailContainer {
+
+	public String emailbody;
+	public String MimeType;
+	public Charset charset;
+	
+	public String getEmailbody() {
+		return emailbody;
+	}
+
+	public void setEmailbody(String emailbody) {
+		this.emailbody = emailbody;
+	}
+}

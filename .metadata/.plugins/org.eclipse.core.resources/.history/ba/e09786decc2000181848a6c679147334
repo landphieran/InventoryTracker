@@ -1,0 +1,6 @@
+package com.andrew.gmail.domain;
+
+public class EmailContainer {
+
+	public String emailbody;
+}

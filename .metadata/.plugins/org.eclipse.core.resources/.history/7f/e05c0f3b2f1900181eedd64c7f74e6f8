@@ -1,0 +1,11 @@
+package com.andrew.gmail.loader;
+
+public class GmailService {
+
+	private static GmailClient client = new GmailClient();
+	
+	static {
+		
+	}
+	
+}

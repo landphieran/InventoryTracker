@@ -1,0 +1,95 @@
+package com.andrew.gmail.mime4j.content;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.james.mime4j.MimeException;
+import org.apache.james.mime4j.parser.AbstractContentHandler;
+import org.apache.james.mime4j.stream.BodyDescriptor;
+import org.apache.james.mime4j.stream.Field;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.util.StreamUtils;
+
+import com.andrew.gmail.domain.EmailContainer;
+import com.andrew.gmail.domain.GmailEmailInfo;
+
+public class GmailContentHandler extends AbstractContentHandler {
+	  	private static final Logger LOGGER = LogManager.getLogger(GmailContentHandler.class);
+		private EmailContainer info = null;
+	  	
+		public GmailContentHandler() {
+			info = new EmailContainer();
+		}
+		public GmailContentHandler(GmailEmailInfo info) {
+			this.info=info;
+		}
+		
+		@Override
+		public void endMultipart() throws MimeException {
+			LOGGER.info("End of Multipart");
+	    }
+		@Override
+	    public void startMultipart(BodyDescriptor bd) throws MimeException {
+			LOGGER.info("Start of Multipart");
+			LOGGER.info("MIMETYPE: " + bd.getMimeType() + "| MEDIATYPE: " + bd.getMediaType() + " | Charset: " + bd.getCharset() + " | encoding: " + bd.getTransferEncoding());
+		}
+		@Override
+	    public void body(BodyDescriptor bd, InputStream is)throws MimeException, IOException {
+			LOGGER.info("Body Detected");
+			LOGGER.info("MIMETYPE: " + bd.getMimeType() + "| MEDIATYPE: " + bd.getMediaType() + " | Charset: " + bd.getCharset() + " | encoding: " + bd.getTransferEncoding());
+			LOGGER.info("Contents = : " + StreamUtils.copyToString(is, Charset.forName(bd.getCharset())));
+			info.setMimeType(bd.getMimeType());
+			info.setCharset(Charset.forName(bd.getCharset());
+			info.setEmailbody(StreamUtils.copyToString(is, Charset.forName(bd.getCharset())));
+	    }
+		@Override
+	    public void endBodyPart() throws MimeException {
+			LOGGER.info("End of Body Part");
+	    }
+		@Override
+	    public void endHeader() throws MimeException {
+			LOGGER.info("End of Header");
+	    }
+		@Override
+	    public void endMessage() throws MimeException {
+			LOGGER.info("Start of Multipart");
+	    }
+		@Override
+	    public void epilogue(InputStream is) throws MimeException, IOException {
+			LOGGER.info("Epilogue - Post multipart");
+			LOGGER.info("Contents = :" + StreamUtils.copyToString(is, Charset.defaultCharset()));
+	    }
+		@Override
+	    public void field(Field field) throws MimeException {
+			LOGGER.info("Header Field");
+			LOGGER.info("Field Name: " + field.getName() + "\n\t| body: " 
+			+ field.getBody() + "\n\t| raw: " 
+			+ Base64.decodeBase64(field.getRaw().toByteArray()));
+	    }
+		@Override
+	    public void preamble(InputStream is) throws MimeException, IOException {
+			LOGGER.info("Preamble - Pre Multipart");
+			LOGGER.info("Contents = :" + StreamUtils.copyToString(is, Charset.defaultCharset()));
+	    }
+		@Override
+	    public void startBodyPart() throws MimeException {
+			LOGGER.info("Start of startBodyPart");
+	    }
+		@Override
+	    public void startHeader() throws MimeException {
+			LOGGER.info("Start of startHeader");
+	    }
+		@Override
+	    public void startMessage() throws MimeException {
+			LOGGER.info("Start of startMessage");
+	    }
+		@Override
+	    public void raw(InputStream is) throws MimeException, IOException {
+			LOGGER.info("Start of raw");
+			LOGGER.info("Contents = : " + is.toString());
+	    }
+
+}

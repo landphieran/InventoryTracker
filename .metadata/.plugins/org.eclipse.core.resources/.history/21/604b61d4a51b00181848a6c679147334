@@ -1,0 +1,59 @@
+package com.andrew.store;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.andrew.gmail.constants.StoreConstants;
+import com.andrew.gmail.domain.GmailEmailInfo;
+import com.andrew.gmail.domain.Receipt;
+import com.google.api.client.util.Base64;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartHeader;
+
+public class WalmartProcessor extends AbstractProcessor {
+
+	@Override
+	public List<GmailEmailInfo> execute(List<Message> messages) {
+		List<GmailEmailInfo> infos = new ArrayList<GmailEmailInfo>();
+		GmailEmailInfo info = null;
+		Receipt receipt = null;
+		
+		for (Message mess : messages) {
+			info = new GmailEmailInfo();
+			
+			try {
+				info.setSnippit(mess.getSnippet());
+				
+				List<MessagePartHeader> headers = mess.getPayload().getHeaders();
+				for (MessagePartHeader header : headers) {
+					if (StoreConstants.SUBJECT.equals(header.getName())) {
+						info.setSubject(header.getValue());
+					}
+					if (StoreConstants.TO.equals(header.getName())) {
+						info.setDestinationEmailAddr(header.getValue());
+					}
+					if (StoreConstants.FROM.equals(header.getName())) {
+						info.setSourceEmailAddr(header.getValue());
+					}
+					if(StoreConstants.DATE.equals(header.getName())) {
+						receipt.setDate(header.getValue());
+					}
+					
+				}
+				List<MessagePart> parts = mess.getPayload().getParts();
+				for (MessagePart part : parts) {
+					byte[] bodyBytes = Base64.decodeBase64(part.getBody().getData());
+					String body = new String(bodyBytes, "UTF-8");
+					System.out.println("Body: " + body);
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return infos;
+	}
+}

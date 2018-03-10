@@ -1,0 +1,16 @@
+package com.andrew.store;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import com.andrew.gmail.domain.GmailEmailInfo;
+
+public class HomeDepotProcessor extends AbstractProcessor {
+
+	@Override
+	public List<GmailEmailInfo> execute(Stream<Message> messages) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

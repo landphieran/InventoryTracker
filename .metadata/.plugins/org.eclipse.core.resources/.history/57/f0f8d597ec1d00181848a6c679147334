@@ -1,0 +1,90 @@
+package com.andrew.store;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.james.mime4j.MimeException;
+import org.apache.james.mime4j.codec.DecodeMonitor;
+import org.apache.james.mime4j.dom.Header;
+import org.apache.james.mime4j.message.DefaultBodyDescriptorBuilder;
+import org.apache.james.mime4j.message.SimpleContentHandler;
+import org.apache.james.mime4j.parser.ContentHandler;
+import org.apache.james.mime4j.parser.MimeStreamParser;
+import org.apache.james.mime4j.stream.BodyDescriptor;
+import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
+import org.apache.james.mime4j.stream.Field;
+import org.apache.james.mime4j.stream.MimeConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.andrew.gmail.constants.StoreConstants;
+import com.andrew.gmail.domain.GmailEmailInfo;
+import com.andrew.gmail.domain.Receipt;
+import com.andrew.gmail.mime4j.content.GmailContentHandler;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartHeader;
+
+public class WalmartProcessor extends AbstractProcessor {
+
+	private static final Logger LOGGER = LogManager.getLogger(WalmartProcessor.class);
+	public static final String SUBJECT = "Subject";
+	public static final String FROM = "From";
+	public static final String TO = "To";
+	public static final String DATE = "Date";
+	@Override
+	public List<GmailEmailInfo> execute(Stream<Message> messages) {
+		List<GmailEmailInfo> infos = new ArrayList<GmailEmailInfo>();
+		
+		
+		List<Message> lMessages = messages.collect(Collectors.toList());
+		for (Message mess : lMessages) {
+			GmailEmailInfo info = new GmailEmailInfo();
+			Receipt receipt = new Receipt();
+			try {	
+				ContentHandler contentHandler = new GmailContentHandler();
+				MimeStreamParser parser = new MimeStreamParser();
+				parser.setContentHandler(contentHandler);
+				
+				//Build out info data
+				info.setMessageId(mess.getId());
+				info.setSnippit(mess.getSnippet());
+				info.setThreadId(mess.getThreadId());
+				info.setLabelids(mess.getLabelIds());
+				int lock = 0;
+				
+				for (MessagePart part : mess.getPayload().getParts()) {
+					for (MessagePartHeader head : part.getHeaders()) {
+						if (StoreConstants.SUBJECT.equals(head.getName())) {
+							info.setSubject(head.getValue());
+						} else if (StoreConstants.FROM.equals(head.getName())) {
+							info.setSourceEmailAddr(head.getValue());
+						} else if (StoreConstants.TO.equals(head.getName())) {
+							info.setDestinationEmailAddr(head.getValue());
+						} else if (StoreConstants.DATE.equals(head.getName())) {
+							receipt.setDate(head.getValue());
+						}
+					}
+					if (info.getSubject() != null && info.getSourceEmailAddr() != null && info.getDestinationEmailAddr() != null
+							&& receipt.getDate() != null) {
+						lock = 1;
+					}
+					parser.parse(new ByteArrayInputStream(Base64.decodeBase64(part.getBody().getData().getBytes(StandardCharsets.UTF_8))));
+				}
+			} catch (MimeException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return infos;
+	}
+}

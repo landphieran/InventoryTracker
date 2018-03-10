@@ -1,0 +1,7 @@
+package com.andrew.gmail.constants;
+
+public class StoreProcessingConstants {
+
+	private static final String SUBJECT = "subject";
+
+}

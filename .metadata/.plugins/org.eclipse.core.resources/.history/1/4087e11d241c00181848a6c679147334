@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>gmail-api-service</artifactId>
+  <packaging>jar</packaging>
+  <name>gmail-api-service</name>
+  
+  <parent>
+    <groupId>com.andrew.inventory.web</groupId>
+    <artifactId>inventory-web-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../inventory-web-parent</relativePath>
+  </parent>
+
+  <dependencies>
+  	<dependency>
+	  	 <groupId>com.google.apis</groupId>
+   		 <artifactId>google-api-services-gmail</artifactId>
+    	 <version>v1-rev3-1.18.0-rc</version>
+	 </dependency>
+	 <dependency>
+		  <groupId>com.google.api-client</groupId>
+		  <artifactId>google-api-client</artifactId>
+		  <version>1.23.0</version>
+	</dependency>
+	<dependency>
+		  <groupId>com.google.oauth-client</groupId>
+		  <artifactId>google-oauth-client-jetty</artifactId>
+		  <version>1.23.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-core</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>com.andrew.inventory.web</groupId>
+    	<artifactId>inventory-manager-datalayer</artifactId>
+     	<version>0.0.1-SNAPSHOT</version>
+    </dependency>
+	<dependency>
+	  <groupId>tech.blueglacier</groupId>
+	  <artifactId>email-mime-parser</artifactId>
+	  <version>1.0.3</version>
+	  <exclusions>
+	    <groupId>org.apache.james</groupId>
+	    <artifactId>apache-mime4j</artifactId>
+	  </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.james</groupId>
+	    <artifactId>apache-mime4j</artifactId>
+	    <version>0.8.1</version>
+	    <type>pom</type>
+	</dependency>
+  </dependencies>
+</project>

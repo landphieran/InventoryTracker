@@ -1,0 +1,135 @@
+package com.andrew.store;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.james.mime4j.MimeException;
+import org.apache.james.mime4j.dom.MessageServiceFactory;
+import org.apache.james.mime4j.parser.ContentHandler;
+import org.apache.james.mime4j.parser.MimeStreamParser;
+import org.apache.james.mime4j.stream.EntityState;
+import org.apache.james.mime4j.stream.Field;
+import org.apache.james.mime4j.stream.MimeTokenStream;
+import org.springframework.util.StreamUtils;
+
+import com.andrew.gmail.constants.StoreConstants;
+import com.andrew.gmail.domain.GmailEmailInfo;
+import com.andrew.gmail.domain.Receipt;
+import com.andrew.gmail.mime4j.content.GmailContentHandler;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartHeader;
+
+public abstract class AbstractProcessor implements IProcessor {
+	
+	public GmailEmailInfo parseMessageAndFillBasicInfo(com.google.api.services.gmail.model.Message mess) {
+		GmailEmailInfo info = new GmailEmailInfo();
+		Receipt receipt = new Receipt();
+		try {	
+			ContentHandler contentHandler = new GmailContentHandler();
+			MimeStreamParser parser = new MimeStreamParser();
+			parser.setContentHandler(contentHandler);
+			
+			//Build out info data
+			info.setMessageId(mess.getId());
+			info.setSnippit(mess.getSnippet());
+			info.setThreadId(mess.getThreadId());
+			info.setLabelids(mess.getLabelIds());
+			int lock = 0; 
+			
+			for (MessagePart part : mess.getPayload().getParts()) {
+				//if the header information is set and there are multiple parts skip subsequent executions
+				if (lock == 0) {
+					for (MessagePartHeader head : part.getHeaders()) {
+						if (StoreConstants.SUBJECT.equals(head.getName())) {
+							info.setSubject(head.getValue());
+						} else if (StoreConstants.FROM.equals(head.getName())) {
+							info.setSourceEmailAddr(head.getValue());
+						} else if (StoreConstants.TO.equals(head.getName())) {
+							info.setDestinationEmailAddr(head.getValue());
+						} else if (StoreConstants.DATE.equals(head.getName())) {
+							receipt.setDate(head.getValue());
+						}
+					}
+					if (info.getSubject() != null && info.getSourceEmailAddr() != null && info.getDestinationEmailAddr() != null
+							&& receipt.getDate() != null) {
+						lock = 1;
+					}
+				}
+				String bodyData = part.getBody().getData();
+				String replacedData = bodyData.replace('_', '/').replace('-', '+');
+				parser.parse(new ByteArrayInputStream(Base64.decodeBase64(replacedData.getBytes(StandardCharsets.UTF_8))));
+				info.setMessageBody(((GmailContentHandler) contentHandler).getEmailContainer().getEmailBody());
+			}
+		} catch (MimeException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return info;
+	}
+	
+	/**
+	 * check the MessageStream
+	 * 
+	 * @param in - the inputstream to check
+	 * @param id - the id of a message to search for
+	 * @param encoding - the encoding of the stream e.g. ISO-8859
+	 * @return - the message with the given id of null if none is found
+	 * @throws IOException
+	 * @throws MimeException
+	 */
+	public org.apache.james.mime4j.dom.Message checkMessageStream(InputStream in, String id, Charset encoding)
+	        throws IOException, MimeException {
+	    // https://james.apache.org/mime4j/usage.html
+		boolean debug = true;
+	    String messageString = new String(StreamUtils.copyToString(in, encoding));
+	    InputStream instream = new ByteArrayInputStream(messageString.getBytes(encoding));
+	    MimeTokenStream stream = new MimeTokenStream();
+	    stream.parse(instream);
+	    for (EntityState state = stream.getState(); state != EntityState.T_END_OF_STREAM; state = stream.next()) {
+	        switch (state) {
+	        case T_BODY:
+	            if (debug) {
+	                System.out.println("Body detected, contents = "
+	                        + stream.getInputStream() + ", header data = "
+	                        + stream.getBodyDescriptor());
+	            }
+	            break;
+	        case T_FIELD:
+	            Field field = stream.getField();
+	            if (debug) {
+	                System.out.println("Header field detected: " + stream.getField());
+	            }
+	            if (field.getName().toLowerCase().equals("message-id")) {
+	                // System.out.println("id: " + field.getBody() + "=" + id + "?");
+	                if (field.getBody().equals("<" + id + ">")) {
+	                    InputStream messageStream = new ByteArrayInputStream(
+	                            messageString.getBytes(encoding));
+	                    org.apache.james.mime4j.dom.Message message = MessageServiceFactory.newInstance()
+	                            .newMessageBuilder().parseMessage(messageStream);
+	                    return message;
+	                } else {
+	                    return null;
+	                }
+	            }
+
+	            break;
+	        case T_START_MULTIPART:
+	            if (debug) {
+	                System.out.println("Multipart message detexted," + " header data = "
+	                        + stream.getBodyDescriptor());
+	            }
+	            break;
+	        }
+	    }
+	    return null;
+	}
+	
+	public abstract List<GmailEmailInfo> execute(Stream<Message> messages);
+}

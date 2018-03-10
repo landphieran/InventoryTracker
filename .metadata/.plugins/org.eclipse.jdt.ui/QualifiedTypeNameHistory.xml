@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp"/>
+<fullyQualifiedTypeName name="com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver"/>
+<fullyQualifiedTypeName name="java.util.logging.Logger"/>
+<fullyQualifiedTypeName name="org.apache.logging.log4j.core.Logger"/>
+<fullyQualifiedTypeName name="org.apache.logging.log4j.LogManager"/>
+<fullyQualifiedTypeName name="com.google.api.services.gmail.Gmail"/>
+<fullyQualifiedTypeName name="com.google.api.services.gmail.model.ListMessagesResponse"/>
+<fullyQualifiedTypeName name="com.google.api.client.repackaged.org.apache.commons.codec.binary.StringUtils"/>
+<fullyQualifiedTypeName name="com.google.api.client.googleapis.batch.json.JsonBatchCallback"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="com.google.api.client.googleapis.batch.BatchRequest"/>
+<fullyQualifiedTypeName name="com.andrew.gmail.client.GmailClient"/>
+<fullyQualifiedTypeName name="com.google.api.client.http.HttpHeaders"/>
+<fullyQualifiedTypeName name="com.google.api.client.googleapis.json.GoogleJsonError"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="com.google.api.services.gmail.Gmail.Users.Messages"/>
+<fullyQualifiedTypeName name="com.google.api.client.googleapis.batch.BatchCallback"/>
+<fullyQualifiedTypeName name="java.util.stream.IntStream"/>
+<fullyQualifiedTypeName name="java.util.stream.Stream"/>
+<fullyQualifiedTypeName name="com.google.api.services.gmail.model.MessagePart"/>
+<fullyQualifiedTypeName name="com.google.api.client.http.HttpRequestInitializer"/>
+<fullyQualifiedTypeName name="com.google.api.client.googleapis.javanet.GoogleNetHttpTransport"/>
+<fullyQualifiedTypeName name="org.springframework.context.annotation.Configuration"/>
+<fullyQualifiedTypeName name="org.springframework.context.annotation.PropertySource"/>
+<fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Value"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.Map.Entry"/>
+<fullyQualifiedTypeName name="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"/>
+<fullyQualifiedTypeName name="org.springframework.context.annotation.Bean"/>
+<fullyQualifiedTypeName name="org.springframework.context.annotation.ComponentScan"/>
+<fullyQualifiedTypeName name="org.springframework.context.support.AbstractApplicationContext"/>
+<fullyQualifiedTypeName name="org.springframework.context.annotation.AnnotationConfigApplicationContext"/>
+<fullyQualifiedTypeName name="org.springframework.stereotype.Service"/>
+<fullyQualifiedTypeName name="com.google.api.services.gmail.model.MessagePartHeader"/>
+<fullyQualifiedTypeName name="com.google.api.client.util.Base64"/>
+<fullyQualifiedTypeName name="java.math.BigInteger"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="com.andrew.gmail.domain.GmailEmailInfo"/>
+<fullyQualifiedTypeName name="com.andrew.store.StoreFactory"/>
+<fullyQualifiedTypeName name="com.google.api.services.gmail.model.Message"/>
+</qualifiedTypeNameHistroy>

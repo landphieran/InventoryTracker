@@ -1,0 +1,56 @@
+package com.andrew.gmail.domain;
+
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+
+public class Receipt {
+
+	//Return, order, shipping notice,
+	private String type;
+	private String date;
+	private String arrivalDate;
+	private String orderId;
+	private String store;
+	private List<Item> items;
+	private BigInteger tax;
+	private BigInteger shippingPrice;
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	public String getStore() {
+		return store;
+	}
+	public void setStore(String store) {
+		this.store = store;
+	}
+	public List<Item> getItems() {
+		return items;
+	}
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+	public BigInteger getTax() {
+		return tax;
+	}
+	public void setTax(BigInteger tax) {
+		this.tax = tax;
+	}
+	public BigInteger getShippingPrice() {
+		return shippingPrice;
+	}
+	public void setShippingPrice(BigInteger shippingPrice) {
+		this.shippingPrice = shippingPrice;
+	}
+	
+}

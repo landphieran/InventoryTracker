@@ -1,0 +1,56 @@
+package com.andrew.gmail.mime4j.content;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.james.mime4j.MimeException;
+import org.apache.james.mime4j.parser.AbstractContentHandler;
+import org.apache.james.mime4j.stream.BodyDescriptor;
+import org.apache.james.mime4j.stream.Field;
+import org.apache.logging.log4j.LogManager;
+
+public class GmailContentHandler extends AbstractContentHandler {
+	  	
+		private static final Logger LOGGER = LogManager.getLogger(GmailContentHandler.class);
+		@Override
+		public void endMultipart() throws MimeException {
+	    }
+		@Override
+	    public void startMultipart(BodyDescriptor bd) throws MimeException {
+	    }
+		@Override
+	    public void body(BodyDescriptor bd, InputStream is)
+	            throws MimeException, IOException {
+	    }
+		@Override
+	    public void endBodyPart() throws MimeException {
+	    }
+		@Override
+	    public void endHeader() throws MimeException {
+	    }
+		@Override
+	    public void endMessage() throws MimeException {
+	    }
+		@Override
+	    public void epilogue(InputStream is) throws MimeException, IOException {
+	    }
+		@Override
+	    public void field(Field field) throws MimeException {
+	    }
+		@Override
+	    public void preamble(InputStream is) throws MimeException, IOException {
+	    }
+		@Override
+	    public void startBodyPart() throws MimeException {
+	    }
+		@Override
+	    public void startHeader() throws MimeException {
+	    }
+		@Override
+	    public void startMessage() throws MimeException {
+	    }
+		@Override
+	    public void raw(InputStream is) throws MimeException, IOException {
+	    }
+
+}

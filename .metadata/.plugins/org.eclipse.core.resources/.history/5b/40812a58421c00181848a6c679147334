@@ -1,0 +1,11 @@
+package com.andrew.store;
+
+import java.util.List;
+import java.util.stream.Stream;
+import com.andrew.gmail.domain.GmailEmailInfo;
+import com.google.api.services.gmail.model.Message;
+
+public abstract class AbstractProcessor implements IProcessor {
+
+	public abstract List<GmailEmailInfo> execute(Stream<Message> messages);
+}

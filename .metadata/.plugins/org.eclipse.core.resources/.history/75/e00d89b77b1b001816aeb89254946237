@@ -1,0 +1,6 @@
+package com.andrew.store;
+
+public interface IProcessor {
+
+	public List<GmailEmailInfo> execute();
+}

@@ -1,0 +1,6 @@
+package com.andrew.store;
+
+public abstract class AbstractProcessor implements IProcessor {
+
+	public List<GmailEmailInfo> execute();
+}

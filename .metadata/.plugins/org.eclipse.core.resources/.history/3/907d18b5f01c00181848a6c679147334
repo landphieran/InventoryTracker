@@ -1,0 +1,5 @@
+package com.andrew.gmail.mime4j.content;
+
+public class GmailContentHandler {
+
+}

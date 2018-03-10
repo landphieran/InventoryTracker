@@ -1,0 +1,10 @@
+package com.andrew.store;
+
+import java.util.List;
+
+import com.andrew.gmail.domain.GmailEmailInfo;
+
+public interface IProcessor {
+
+	public List<GmailEmailInfo> execute();
+}

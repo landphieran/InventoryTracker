@@ -1,0 +1,11 @@
+package com.andrew.gmail.domain;
+
+import java.math.BigInteger;
+
+public class Item {
+
+	private String name;
+	private BigInteger price;
+	private int quantity;
+	private BigInteger eachPrice;
+}

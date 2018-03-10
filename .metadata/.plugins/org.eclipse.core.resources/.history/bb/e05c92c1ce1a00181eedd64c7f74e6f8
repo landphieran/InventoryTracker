@@ -1,0 +1,5 @@
+package com.andrew.gmail.domain;
+
+public class ReceiptInfo {
+
+}

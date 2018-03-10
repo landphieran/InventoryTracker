@@ -1,0 +1,72 @@
+package com.andrew.gmail.loader;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import com.andrew.gmail.client.GmailClient;
+import com.google.api.client.googleapis.batch.BatchRequest;
+import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
+import com.google.api.client.googleapis.json.GoogleJsonError;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
+
+public class GmailBatchRunner {
+	private final 
+	final Gmail client = GmailClient.getGmailService();
+	final List<Message> messages = new ArrayList<Message>();
+	BatchRequest batchRequest = client.batch();
+	
+	JsonBatchCallback<Message> callback = new JsonBatchCallback<Message>() {
+	    public void onSuccess(Message message, HttpHeaders responseHeaders) {
+	        synchronized (messages) {
+	            messages.add(message);  
+	        }
+	    }
+
+	    @Override
+	    public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders)
+	            throws IOException {
+	    }
+	};
+	
+	public static void main(String args[]) {
+		execute();
+	}
+	
+	public static void execute() {
+		int BATCH_SIZE = 100;
+		try {
+			List<Message> messages = GmailService.listMessagesMatchingQuery(client, "me","from:*walmart");
+			
+			IntStream.range(0, (messages.size()+BATCH_SIZE-1)/BATCH_SIZE)
+	         .mapToObj(i -> messages.subList(i*BATCH_SIZE, Math.min(messages.size(), (i+1)*BATCH_SIZE))).parallel()
+	         .forEach(batch -> process(batch));
+		
+			for (Message mess : messages) {
+				System.out.println(mess.toPrettyString());
+				MessagePart part = mess.getPayload();
+				String raw = mess.getRaw();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void process(List<Message> messages) {
+		
+		try {
+			for (Message message : messages) {
+				client.users().messages().get("me", message.getId()).set("format", "metadata").set("fields", "payload").queue(batchRequest, callback);
+			}
+			batchRequest.execute();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+}
